@@ -23,19 +23,24 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
     - name: Publish
-      run: dotnet publish  --configuration Release --output ./publish
+      run: dotnet publish  --no-build -c Release -o ./published 
+    
     - name: Deploy to Azure
-     uses: azure/webapps-deploy@v2
-     with:
+      uses: azure/webapps-deploy@v2
+      with:
         app-name: ${{env.AZURE_WEBAPP_NAME}}
-        publish-profile: ${{secrets.API_PUBLISH_SECRET}}
-        package: ./publish
+        publish-profile:  ${{ secrets.API_PUBLISH_SECRET}}
+        package: ./published
 
 
